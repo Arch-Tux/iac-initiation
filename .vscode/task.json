@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Terraform: Apply",
+      "type": "shell",
+      "command": "terraform apply",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "💣 Terraform: Destroy",
+      "type": "shell",
+      "command": "terraform destroy",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "⚙️ Ansible: Run Playbook",
+      "type": "shell",
+      "command": "./run.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/ansible"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "dependsOn": []
+    },
+    {
+      "label": "🎯 Deploy: Full Stack (Terraform + Ansible)",
+      "dependsOn": [
+        "Terraform: Apply",
+        "Ansible: Run Playbook"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
