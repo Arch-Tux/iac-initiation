@@ -95,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   size                = var.vm_size
   admin_username      = var.admin_username
   admin_password      = var.admin_password
-  
+
   disable_password_authentication = false
 
   network_interface_ids = [
@@ -113,19 +113,6 @@ resource "azurerm_linux_virtual_machine" "main" {
     sku       = "22_04-lts-gen2"
     version   = "latest"
   }
-
-  # Installation déclarative d'Apache via cloud-init
-  custom_data = base64encode(<<-EOF
-    #!/bin/bash
-    apt-get update
-    apt-get install -y apache2
-    systemctl start apache2
-    systemctl enable apache2
-    echo "<h1>Serveur Apache déployé avec Terraform sur Azure</h1>" > /var/www/html/index.html
-    echo "<p>VM: ${var.vm_name}</p>" >> /var/www/html/index.html
-    echo "<p>Déploiement déclaratif via Infrastructure as Code</p>" >> /var/www/html/index.html
-  EOF
-  )
 
   tags = {
     environment = "demo"

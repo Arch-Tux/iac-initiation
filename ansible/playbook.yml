@@ -1,0 +1,58 @@
+---
+- name: Configuration Apache sur VM Azure
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Mise à jour du cache APT
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      tags:
+        - apache
+        - setup
+
+    - name: Installation d'Apache2
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+      tags:
+        - apache
+        - setup
+
+    - name: Démarrage et activation d'Apache2 au boot
+      ansible.builtin.systemd:
+        name: apache2
+        state: started
+        enabled: yes
+      tags:
+        - apache
+        - service
+
+    - name: Copie du fichier index.html personnalisé
+      ansible.builtin.copy:
+        src: ../index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: Redémarrer Apache
+      tags:
+        - apache
+        - content
+
+    - name: Vérifier qu'Apache écoute sur le port 80
+      ansible.builtin.wait_for:
+        port: 80
+        delay: 2
+        timeout: 30
+      tags:
+        - apache
+        - validation
+
+  handlers:
+    - name: Redémarrer Apache
+      ansible.builtin.systemd:
+        name: apache2
+        state: restarted
