@@ -34,14 +34,14 @@ resource "azurerm_resource_group" "main" {
 
 # Génère un suffixe aléatoire pour le nom du Key Vault (doit être unique)
 resource "random_string" "suffix" {
-  length  = 6
+  length  = 8
   special = false
   upper   = false
 }
 
 # Azure Key Vault pour stocker la clé SSH privée
 resource "azurerm_key_vault" "main" {
-  name                       = "kv-${var.vm_name}-${random_string.suffix.result}"
+  name                       = "kv-tf-${random_string.suffix.result}"
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
