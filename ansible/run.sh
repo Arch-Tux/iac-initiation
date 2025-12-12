@@ -38,3 +38,18 @@ ansible-playbook playbook.yml -v
 echo ""
 echo "✅ Playbook exécuté avec succès!"
 echo "🌐 Apache accessible sur: http://$IP"
+
+# Fermer automatiquement le port SSH pour la sécurité
+echo ""
+echo "🔒 Fermeture du port SSH pour sécuriser la VM..."
+az network nsg rule delete \
+  --resource-group rg-terraform-demo \
+  --nsg-name nsg-vm-linux-apache \
+  --name SSH \
+  --yes > /dev/null 2>&1
+
+if [ $? -eq 0 ]; then
+    echo "✅ Port SSH fermé - VM sécurisée (plus d'accès SSH possible)"
+else
+    echo "⚠️ Impossible de fermer le port SSH automatiquement"
+fi
