@@ -2,6 +2,26 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "🛠️ Terraform: Init",
+      "type": "shell",
+      "command": "terraform init",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "📋 Terraform: Plan",
+      "type": "shell",
+      "command": "terraform plan",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
       "label": "🚀 Terraform: Apply",
       "type": "shell",
       "command": "terraform apply",
@@ -28,7 +48,7 @@
       "options": {
         "cwd": "${workspaceFolder}/ansible"
       },
-      "group": "test",
+      "group": "build",
       "presentation": {
         "reveal": "always",
         "panel": "new"
