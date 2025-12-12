@@ -4,7 +4,7 @@ set -e
 echo "🚀 Exécution du playbook Ansible..."
 echo ""
 
-# Vérifier que Terraform a bien créé l'infrastructure
+# Vérifie que Terraform a bien créé l'infrastructure
 if ! cd .. && terraform output public_ip_address > /dev/null 2>&1; then
     echo "❌ Erreur: L'infrastructure Terraform n'est pas déployée"
     echo "   Exécutez d'abord: terraform apply"
@@ -13,11 +13,11 @@ fi
 
 cd ansible
 
-# Attendre que la VM soit prête
+# Check VM soit prête
 echo "⏳ Attente que la VM soit accessible (SSH)..."
 IP=$(cd .. && terraform output -raw public_ip_address)
 
-# Attendre max 120 secondes
+# Timout 120 secondes
 counter=0
 max_attempts=60
 while ! nc -z $IP 22 2>/dev/null; do
@@ -32,7 +32,7 @@ done
 echo "✅ VM accessible"
 echo ""
 
-# Exécuter le playbook
+# Run playbooks
 ansible-playbook playbook.yml -v
 
 echo ""
