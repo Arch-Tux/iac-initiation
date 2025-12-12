@@ -42,11 +42,17 @@ echo "🌐 Apache accessible sur: http://$IP"
 # Fermer automatiquement le port SSH pour la sécurité
 echo ""
 echo "🔒 Fermeture du port SSH pour sécuriser la VM..."
+
+# Récupérer dynamiquement les valeurs depuis Terraform
+RG=$(cd .. && terraform output -raw resource_group_name 2>/dev/null)
+VM_NAME=$(cd .. && terraform output -raw vm_name 2>/dev/null)
+NSG="nsg-$VM_NAME"
+
 az network nsg rule delete \
-  --resource-group rg-terraform-demo \
-  --nsg-name nsg-vm-linux-apache \
+  --resource-group "$RG" \
+  --nsg-name "$NSG" \
   --name SSH \
-  --yes > /dev/null 2>&1
+  > /dev/null 2>&1
 
 if [ $? -eq 0 ]; then
     echo "✅ Port SSH fermé - VM sécurisée (plus d'accès SSH possible)"

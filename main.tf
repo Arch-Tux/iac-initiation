@@ -1,3 +1,26 @@
+# Data source pour obtenir le tenant ID et l'objet ID de l'utilisateur actuel
+data "azurerm_client_config" "current" {}
+
+# Génère automatiquement une paire de clés SSH
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+# Sauvegarde la clé privée localement (backup local)
+resource "local_sensitive_file" "ssh_private_key" {
+  content         = tls_private_key.ssh.private_key_openssh
+  filename        = pathexpand("${var.ssh_key_path}/${var.ssh_key_name}")
+  file_permission = "0600"
+}
+
+# Sauvegarde la clé publique localement
+resource "local_file" "ssh_public_key" {
+  content         = tls_private_key.ssh.public_key_openssh
+  filename        = pathexpand("${var.ssh_key_path}/${var.ssh_key_name}.pub")
+  file_permission = "0644"
+}
+
 # Groupe de ressources
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
@@ -7,6 +30,52 @@ resource "azurerm_resource_group" "main" {
     environment = "demo"
     managed_by  = "terraform"
   }
+}
+
+# Génère un suffixe aléatoire pour le nom du Key Vault (doit être unique)
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+# Azure Key Vault pour stocker la clé SSH privée
+resource "azurerm_key_vault" "main" {
+  name                       = "kv-${var.vm_name}-${random_string.suffix.result}"
+  location                   = azurerm_resource_group.main.location
+  resource_group_name        = azurerm_resource_group.main.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  soft_delete_retention_days = 7
+
+  # Politique d'accès pour l'utilisateur actuel
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Get",
+      "List",
+      "Set",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+
+  tags = {
+    environment = "demo"
+    managed_by  = "terraform"
+  }
+}
+
+# Stocke la clé privée SSH dans Key Vault
+resource "azurerm_key_vault_secret" "ssh_private_key" {
+  name         = "ssh-private-key"
+  value        = tls_private_key.ssh.private_key_openssh
+  key_vault_id = azurerm_key_vault.main.id
+
+  depends_on = [azurerm_key_vault.main]
 }
 
 # Réseau virtuel
@@ -89,14 +158,18 @@ resource "azurerm_network_interface_security_group_association" "main" {
 
 # Machine virtuelle Linux
 resource "azurerm_linux_virtual_machine" "main" {
-  name                = var.vm_name
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  size                = var.vm_size
-  admin_username      = var.admin_username
-  admin_password      = var.admin_password
+  name                            = var.vm_name
+  resource_group_name             = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
+  size                            = var.vm_size
+  admin_username                  = var.admin_username
+  disable_password_authentication = true
 
-  disable_password_authentication = false
+  # Clé SSH publique pour l'authentification (générée automatiquement)
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = tls_private_key.ssh.public_key_openssh
+  }
 
   network_interface_ids = [
     azurerm_network_interface.main.id,

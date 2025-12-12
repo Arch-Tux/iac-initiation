@@ -22,9 +22,19 @@
       }
     },
     {
-      "label": "🚀 Terraform: Apply",
+      "label": "� Update IP",
       "type": "shell",
-      "command": "terraform apply",
+      "command": "./update-ip.sh",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "�🚀 Terraform: Apply",
+      "type": "shell",
+      "command": "terraform apply -auto-approve",
       "group": "build",
       "presentation": {
         "reveal": "always",
@@ -34,7 +44,7 @@
     {
       "label": "💣 Terraform: Destroy",
       "type": "shell",
-      "command": "terraform destroy",
+      "command": "terraform destroy -auto-approve",
       "group": "build",
       "presentation": {
         "reveal": "always",
@@ -57,7 +67,8 @@
     {
       "label": "🎯 Deploy: Full Stack (Terraform + Ansible)",
       "dependsOn": [
-        "🚀 Terraform: Apply",
+        "� Update IP",
+        "�🚀 Terraform: Apply",
         "⚙️ Ansible: Run Playbook"
       ],
       "dependsOrder": "sequence",

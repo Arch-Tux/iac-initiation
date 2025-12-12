@@ -28,16 +28,22 @@ variable "admin_username" {
   default     = "azureuser"
 }
 
-variable "admin_password" {
-  description = "Mot de passe administrateur (OBLIGATOIRE: définir dans terraform.tfvars)"
+variable "ssh_key_name" {
+  description = "Nom de la clé SSH (sans extension)"
   type        = string
-  sensitive   = true
+  default     = "azure-vm-terraform"
+}
+
+variable "ssh_key_path" {
+  description = "Répertoire où stocker les clés SSH"
+  type        = string
+  default     = "~/.ssh"
 }
 
 variable "allowed_ssh_ip" {
   description = "IP address allowed to access SSH (OBLIGATOIRE: définir dans terraform.tfvars, qui est gitignore)"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "allowed_http_ip" {

@@ -1,8 +1,8 @@
 ---
 - name: Configuration Apache sur VM Azure
   hosts: all
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   tasks:
     - name: Mise à jour du cache APT
