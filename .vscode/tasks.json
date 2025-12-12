@@ -32,20 +32,16 @@
       "presentation": {
         "reveal": "always",
         "panel": "new"
-      },
-      "dependsOn": []
+      }
     },
     {
       "label": "🎯 Deploy: Full Stack (Terraform + Ansible)",
       "dependsOn": [
-        "Terraform: Apply",
-        "Ansible: Run Playbook"
+        "🚀 Terraform: Apply",
+        "⚙️ Ansible: Run Playbook"
       ],
       "dependsOrder": "sequence",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "group": "build"
     }
   ]
 }
