@@ -30,12 +30,13 @@
         - apache
         - service
 
-    - name: Copie du fichier index.html personnalisé
+    - name: Copie du fichier index.html
       ansible.builtin.copy:
         src: ../index.html
         dest: /var/www/html/index.html
         owner: www-data
         group: www-data
+        # rw-r--r--
         mode: '0644'
       notify: Redémarrer Apache
       tags:
