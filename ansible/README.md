@@ -15,7 +15,7 @@ ansible/
 ├── ansible.cfg       # Configuration Ansible
 ├── inventory.yml     # Inventaire dynamique (IP depuis Terraform)
 ├── playbook.yml      # Playbook principal (idempotent)
-└── run.sh           # Script d'exécution
+└── run.sh            # Script d'exécution
 ```
 
 ## 🚀 Utilisation
