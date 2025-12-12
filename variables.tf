@@ -29,15 +29,15 @@ variable "admin_username" {
 }
 
 variable "admin_password" {
-  description = "Mot de passe administrateur"
+  description = "Mot de passe administrateur (OBLIGATOIRE: définir dans terraform.tfvars)"
   type        = string
-  default     = "P@ssw0rd1234!"
   sensitive   = true
 }
 
 variable "allowed_ssh_ip" {
-  description = "IP address allowed to access SSH (OBLIGATOIRE: définir dans terraform.tfvars, qui est gitignored)"
+  description = "IP address allowed to access SSH (OBLIGATOIRE: définir dans terraform.tfvars, qui est gitignore)"
   type        = string
+  sensitive = true
 }
 
 variable "allowed_http_ip" {
