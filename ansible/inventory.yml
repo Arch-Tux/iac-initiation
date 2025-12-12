@@ -3,7 +3,7 @@ all:
     vm_azure:
       ansible_host: "{{ lookup('pipe', 'cd .. && terraform output -raw public_ip_address') }}"
       ansible_user: azureuser
-      ansible_password: P@ssw0rd1234!
+      # ansible_password défini dans group_vars/all.yml (gitignored)
       ansible_become: yes
       ansible_become_method: sudo
       ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
