@@ -1,8 +1,8 @@
 all:
   hosts:
     vm_azure:
-      ansible_host: "{{ lookup('pipe', 'cd .. && terraform output -raw public_ip_address') }}"
-      ansible_user: "{{ lookup('pipe', 'cd .. && terraform output -raw admin_username') }}"
-      ansible_ssh_private_key_file: "{{ lookup('pipe', 'cd .. && terraform output -raw ssh_private_key_path') }}"
+      ansible_host: "{{ lookup('pipe', 'cd ../terraform && terraform output -raw public_ip_address') }}"
+      ansible_user: "{{ lookup('pipe', 'cd ../terraform && terraform output -raw admin_username') }}"
+      ansible_ssh_private_key_file: "{{ lookup('pipe', 'cd ../terraform && terraform output -raw ssh_private_key_path') }}"
       ansible_become: true
       ansible_become_method: sudo

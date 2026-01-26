@@ -32,7 +32,7 @@
 
     - name: Copie du fichier index.html
       ansible.builtin.copy:
-        src: ../index.html
+        src: ../output/index.html
         dest: /var/www/html/index.html
         owner: www-data
         group: www-data

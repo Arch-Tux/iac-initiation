@@ -5,17 +5,17 @@ echo "🚀 Exécution du playbook Ansible..."
 echo ""
 
 # Vérifie que Terraform a bien créé l'infrastructure
-if ! cd .. && terraform output public_ip_address > /dev/null 2>&1; then
+if ! cd ../terraform && terraform output public_ip_address > /dev/null 2>&1; then
     echo "❌ Erreur: L'infrastructure Terraform n'est pas déployée"
     echo "   Exécutez d'abord: terraform apply"
     exit 1
 fi
 
-cd ansible
+cd ../ansible
 
 # Check VM soit prête
 echo "⏳ Attente que la VM soit accessible (SSH)..."
-IP=$(cd .. && terraform output -raw public_ip_address)
+IP=$(cd ../terraform && terraform output -raw public_ip_address)
 
 # Timout 120 secondes
 counter=0
@@ -44,8 +44,8 @@ echo ""
 echo "🔒 Fermeture du port SSH pour sécuriser la VM..."
 
 # Récupérer dynamiquement les valeurs depuis Terraform
-RG=$(cd .. && terraform output -raw resource_group_name 2>/dev/null)
-VM_NAME=$(cd .. && terraform output -raw vm_name 2>/dev/null)
+RG=$(cd ../terraform && terraform output -raw resource_group_name 2>/dev/null)
+VM_NAME=$(cd ../terraform && terraform output -raw vm_name 2>/dev/null)
 NSG="nsg-$VM_NAME"
 
 az network nsg rule delete \
